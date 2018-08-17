@@ -1,0 +1,52 @@
+{
+  "name": "itt_final_backend",
+  "version": "1.0.0",
+  "description": "refactoring of final project",
+  "main": "app.mjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Andrei Smolnikov",
+  "license": "ISC",
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": true
+  },
+  "eslintConfig": {
+    "extends": [
+      "airbnb-base",
+      "prettier"
+    ],
+    "settings": {
+      "import/extensions": [
+        "error",
+        "always",
+        {
+          "js": "never",
+          "jsx": "never",
+          "mjs": "never"
+        }
+      ],
+      "import/resolver": {
+        "node": {
+          "extensions": [
+            ".js",
+            ".mjs"
+          ]
+        }
+      }
+    },
+    "env": {
+      "node": true
+    }
+  },
+  "devDependencies": {
+    "eslint": "^5.3.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "prettier": "^1.14.2"
+  },
+  "dependencies": {
+    "eslint-config-prettier": "^3.0.1"
+  }
+}
