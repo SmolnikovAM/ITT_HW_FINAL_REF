@@ -2,22 +2,33 @@ import Koa from 'koa';
 import cors from '@koa/cors';
 import Router from 'koa-router';
 import bodyParser from 'koa-bodyparser';
-// import db from './db';
 
-import config from './config';
+import { container, TYPES } from './inversifyContainer';
+
+import authRouter from './routes/auth';
+
+const Config = container.get(TYPES.Config);
+async function start() {
+  await container.get(TYPES.Model).done;
+  if (Config.insertTestValues) {
+    await container.get(TYPES.SeedTestValues).done;
+  }
+}
+
+start();
 
 const app = new Koa();
 
-const demoRouter = new Router();
-
-demoRouter.get('/', ctx => {
-  ctx.body = 'hello world';
-});
+const mainRouter = new Router();
+const apiRouter = new Router();
 
 app.use(cors());
-app.use(demoRouter.allowedMethods());
-app.use(demoRouter.routes());
+app.use(bodyParser());
+apiRouter.use('/auth', authRouter.routes(), authRouter.allowedMethods());
+mainRouter.use('/api', apiRouter.routes(), apiRouter.allowedMethods());
+app.use(mainRouter.allowedMethods());
+app.use(mainRouter.routes());
 
-console.log(config.port);
-
-app.listen(config.port, (...srg) => console.log(srg));
+app.listen(Config.port, () =>
+  console.log(`start application on port ${Config.port}`)
+);

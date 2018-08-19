@@ -4,7 +4,7 @@ const APP_NAME = 'ITTALENTS';
 
 // using example
 // ITTALENTS_port=9000 npm run start
-export default rc(APP_NAME, {
+const config = rc(APP_NAME, {
   port: 3000,
   db: [
     'dbx_bd',
@@ -12,8 +12,12 @@ export default rc(APP_NAME, {
     '',
     {
       dialect: 'sqlite',
-      storage: './test.db.sqlite',
+      storage: './db/test.db.sqlite',
       logging: false,
     },
   ],
+  dbForce: false,
+  insertTestValues: false,
 });
+
+export default config;
