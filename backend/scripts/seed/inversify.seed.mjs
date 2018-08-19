@@ -7,7 +7,7 @@ export const LOCALTYPES = {
 
 export function register({ container, TYPES }) {
   inversify.decorate(inversify.injectable(), Seed);
-  inversify.decorate(inversify.inject(TYPES.Model), Seed, 0);
+  inversify.decorate(inversify.inject(TYPES.Repository), Seed, 0);
 
   container
     .bind(TYPES.SeedTestValues)

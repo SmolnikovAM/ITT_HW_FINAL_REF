@@ -1,15 +1,15 @@
 export default class Seed {
-  constructor(Model) {
+  constructor({ models }) {
     this.done = new Promise(res => {
       this.resDone = res;
     });
-    this.Model = Model;
+    this.models = models;
     this.pushValues();
     // ----------
   }
 
   async pushValues() {
-    const { UserModel } = this.Model;
+    const { UserModel } = this.models;
     await UserModel.create({
       email: 'test@test.com',
       name: 'Test user 1',

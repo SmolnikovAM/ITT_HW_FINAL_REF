@@ -1,12 +1,16 @@
 export default class Auth {
-  constructor(UserModel, Errors) {
-    this.UserModel = UserModel;
+  constructor({ userRepository }, Errors) {
+    this.userRepository = userRepository;
     this.Errors = Errors;
   }
 
-  async login({ password, email }) {
-    const user = await this.UserModel.findOne({ where: { password, email } });
-    if (!user) throw this.Errors.NotAuthorizedError;
-    return user;
+  async login({ password: pass, email }) {
+    const { NotAuthorizedError, NotFoundError } = this.Errors;
+    const user = await this.userRepository.getUserByEmail({ email });
+    if (!user) throw new NotFoundError();
+    if (pass !== user.password) throw new NotAuthorizedError();
+
+    const { password, ...rest } = user;
+    return rest;
   }
 }

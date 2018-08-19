@@ -9,7 +9,7 @@ import authRouter from './routes/auth';
 
 const Config = container.get(TYPES.Config);
 async function start() {
-  await container.get(TYPES.Model).done;
+  await container.get(TYPES.Repository).done;
   if (Config.insertTestValues) {
     await container.get(TYPES.SeedTestValues).done;
   }
