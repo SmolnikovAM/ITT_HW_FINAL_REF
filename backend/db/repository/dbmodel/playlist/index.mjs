@@ -3,9 +3,13 @@ import Sequelize from 'sequelize';
 export default sequelize =>
   sequelize.define('playlist', {
     id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-    userId: { type: Sequelize.INTEGER },
+    // userId: { type: Sequelize.INTEGER },
     name: { type: Sequelize.STRING },
-    private: { type: Sequelize.STRING, isIn: [['PUBLIC', 'PRIVATE']] },
+    private: {
+      type: Sequelize.STRING,
+      isIn: [['PUBLIC', 'PRIVATE']],
+      defaultValue: 'PUBLIC',
+    },
   });
 
 // CREATE TABLE playlists (

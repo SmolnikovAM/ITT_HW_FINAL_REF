@@ -3,9 +3,10 @@ import Sequelize from 'sequelize';
 export default sequelize =>
   sequelize.define('notification', {
     id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-    commentId: { type: Sequelize.INTEGER },
-    userId: { type: Sequelize.INTEGER },
-    likeSign: { type: Sequelize.INTEGER, isIn: [[-1, 0, 1]] },
+    // user_id integer,
+    // video_id integer
+    massageInfo: { type: Sequelize.STRING },
+    postDate: { type: Sequelize.DATE, defaultValue: Sequelize.NOW },
   });
 
 // CREATE TABLE notifications (

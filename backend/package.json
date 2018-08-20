@@ -5,6 +5,7 @@
   "main": "app.mjs",
   "scripts": {
     "start": "node --experimental-modules ./app",
+    "rebuild": "ITTALENTS_port=3001 ITTALENTS_dbForce=true ITTALENTS_insertTestValues=true ITTALENTS_db__params__logging=true node --experimental-modules ./app",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --experimental-modules ./app"
   },
@@ -49,6 +50,7 @@
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-config-prettier": "^3.0.1",
     "eslint-plugin-import": "^2.14.0",
+    "jest": "^23.5.0",
     "nodemon": "^1.18.3",
     "prettier": "^1.14.2"
   },

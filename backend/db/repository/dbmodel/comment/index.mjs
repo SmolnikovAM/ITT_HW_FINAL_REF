@@ -4,10 +4,10 @@ export default sequelize =>
   sequelize.define('comment', {
     id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
     text: { type: Sequelize.TEXT },
-    userId: { type: Sequelize.INTEGER },
-    videoId: { type: Sequelize.INTEGER },
-    likesCount: { type: Sequelize.INTEGER },
-    dislikesCount: { type: Sequelize.INTEGER },
+    // userId: { type: Sequelize.INTEGER },
+    // videoId: { type: Sequelize.INTEGER },
+    likesCount: { type: Sequelize.INTEGER, defaultValue: 0 },
+    dislikesCount: { type: Sequelize.INTEGER, defaultValue: 0 },
   });
 
 // CREATE TABLE comments (

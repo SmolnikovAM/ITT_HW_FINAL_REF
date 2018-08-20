@@ -3,9 +3,9 @@ import Sequelize from 'sequelize';
 export default sequelize =>
   sequelize.define('recentlySeen', {
     id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-    userId: { type: Sequelize.INTEGER },
-    videoId: { type: Sequelize.INTEGER },
-    seenDate: { type: Sequelize.DATE },
+    // userId: { type: Sequelize.INTEGER },
+    // videoId: { type: Sequelize.INTEGER },
+    seenDate: { type: Sequelize.DATE, defaultValue: Sequelize.NOW },
   });
 
 // CREATE TABLE recently_seen (

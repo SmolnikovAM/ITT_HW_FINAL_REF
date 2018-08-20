@@ -3,9 +3,9 @@ import Sequelize from 'sequelize';
 export default sequelize =>
   sequelize.define('userVideoLike', {
     id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-    videoId: { type: Sequelize.INTEGER },
-    userId: { type: Sequelize.INTEGER },
-    likeSign: { type: Sequelize.INTEGER, isIn: [[-1, 0, 1]] },
+    // videoId: { type: Sequelize.INTEGER },
+    // userId: { type: Sequelize.INTEGER },
+    likeSign: { type: Sequelize.INTEGER, isIn: [[-1, 0, 1]], defaultValue: 0 },
   });
 
 // CREATE TABLE users_videos_likes (

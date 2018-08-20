@@ -16,29 +16,42 @@ import UserRepository from './repository/userRepository';
 export default class Repository {
   constructor(config, Errors) {
     this.config = config;
-    this.sequelize = new Sequielize(...config.db);
-    this.models = {};
+    const { database, username, password, params } = config.db;
+    this.sequelize = new Sequielize(database, username, password, params);
     this.Errors = Errors;
+
+    this.loadModels();
+    this.modelConnections();
+    this.startRepositories();
+  }
+
+  loadModels() {
+    const User = userTableCreate(this.sequelize);
+    const Comment = commentTableCreate(this.sequelize);
+    const CommentUserLike = commentUserLikeTableCreate(this.sequelize);
+    const Notification = notificationTableCreate(this.sequelize);
+    const Playlist = playlistTableCreate(this.sequelize);
+    const RecentlySeen = recentlySeenTableCreate(this.sequelize);
+    const Subcribe = subcribeTableCreate(this.sequelize);
+    const Video = videoTableCreate(this.sequelize);
+    const VideoPlaylist = videoPlaylistTableCreate(this.sequelize);
+    const UserVideoLike = userVideoLikeTableCreate(this.sequelize);
+    this.models = {
+      User,
+      Comment,
+      CommentUserLike,
+      Notification,
+      Playlist,
+      RecentlySeen,
+      Subcribe,
+      Video,
+      VideoPlaylist,
+      UserVideoLike,
+    };
 
     this.done = new Promise(res => {
       this.resDone = res;
     });
-
-    this.models.UserModel = userTableCreate(this.sequelize);
-    this.models.CommentModel = commentTableCreate(this.sequelize);
-    this.models.CommentUserLikeModel = commentUserLikeTableCreate(
-      this.sequelize
-    );
-    this.models.NotificationModel = notificationTableCreate(this.sequelize);
-    this.models.PlaylistModel = playlistTableCreate(this.sequelize);
-    this.models.RecentlyModel = recentlySeenTableCreate(this.sequelize);
-    this.models.SubcribeModel = subcribeTableCreate(this.sequelize);
-    this.models.VideoModel = videoTableCreate(this.sequelize);
-    this.models.VideoPlaylistModel = videoPlaylistTableCreate(this.sequelize);
-    this.models.userVideoLikeVideoModel = userVideoLikeTableCreate(
-      this.sequelize
-    );
-
     let promiseChain = Promise.resolve();
     Object.entries(this.models).forEach(([key, value]) => {
       this[key] = value;
@@ -46,16 +59,73 @@ export default class Repository {
         value.sync({ force: this.config.dbForce })
       );
     });
-
     promiseChain.then(this.resDone);
-
-    this.modelStart();
   }
 
-  async modelStart() {
-    this.userRepository = new UserRepository(
-      this.models.UserModel,
-      this.Errors
-    );
+  modelConnections() {
+    const {
+      User,
+      Comment,
+      CommentUserLike,
+      Notification,
+      Playlist,
+      RecentlySeen,
+      Subcribe,
+      Video,
+      VideoPlaylist,
+      UserVideoLike,
+    } = this.models;
+
+    Video.belongsTo(User);
+    User.Videos = User.hasMany(Video);
+
+    Playlist.belongsTo(User);
+    User.Playlists = User.hasMany(Playlist);
+
+    VideoPlaylist.belongsTo(Playlist);
+    Playlist.hasMany(VideoPlaylist);
+    VideoPlaylist.belongsTo(Video);
+    Video.hasMany(VideoPlaylist);
+
+    CommentUserLike.belongsTo(User);
+    CommentUserLike.belongsTo(Comment);
+
+    Comment.belongsTo(User);
+    User.hasMany(Comment);
+    Comment.belongsTo(Video);
+    Video.hasMany(Comment);
+
+    RecentlySeen.belongsTo(User);
+    User.hasMany(RecentlySeen);
+    RecentlySeen.belongsTo(Video);
+    Video.hasMany(RecentlySeen);
+
+    UserVideoLike.belongsTo(Video);
+    Video.hasMany(UserVideoLike);
+    UserVideoLike.belongsTo(User);
+    User.hasMany(UserVideoLike);
+
+    Notification.belongsTo(User);
+    Video.hasMany(Notification);
+    Notification.belongsTo(Video);
+    Video.hasMany(Notification);
+
+    Subcribe.belongsTo(User);
+    User.hasMany(Subcribe);
+    Subcribe.belongsTo(User, { as: 'subscribeUser' });
+    User.hasMany(Subcribe, { as: 'subscribeUser' });
+  }
+
+  startRepositories() {
+    this.userRepository = new UserRepository(this.models.User, this.Errors);
+    // Comment,
+    // CommentUserLike,
+    // Notification,
+    // Playlist,
+    // Recently,
+    // Subcribe,
+    // Video,
+    // VideoPlaylist,
+    // UserVideoLikeVideo,
   }
 }

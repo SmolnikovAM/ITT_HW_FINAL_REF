@@ -7,10 +7,18 @@ export default sequelize =>
     name: { type: Sequelize.STRING },
     password: { type: Sequelize.STRING },
     image: { type: Sequelize.STRING },
-    role: { type: Sequelize.STRING, isIn: [['ADMIN', 'USER']] },
-    status: { type: Sequelize.STRING, isIn: [['ACTIVE', 'BLOCK']] },
+    role: {
+      type: Sequelize.STRING,
+      isIn: [['ADMIN', 'USER']],
+      defaultValue: 'USER',
+    },
+    status: {
+      type: Sequelize.STRING,
+      isIn: [['ACTIVE', 'BLOCK']],
+      defaultValue: 'ACTIVE',
+    },
     provider: { type: Sequelize.STRING },
-    providerId: { type: Sequelize.STRING },
+    providerUUID: { type: Sequelize.STRING },
   });
 
 // CREATE TABLE users (

@@ -1,14 +1,14 @@
 export default class UserRepository {
-  constructor(UserModel, Errors) {
-    this.UserModel = UserModel;
+  constructor(User, Errors) {
+    this.User = User;
     this.Errors = Errors;
   }
 
   getUserBy(id) {
-    return this.UserModel.findOne({ where: { id } });
+    return this.User.findOne({ where: { id } });
   }
 
   async getUserByEmail({ email }) {
-    return this.UserModel.findOne({ where: { email } });
+    return this.User.findOne({ where: { email } });
   }
 }
