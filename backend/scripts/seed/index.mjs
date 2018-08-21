@@ -9,8 +9,9 @@ export default class Seed {
   }
 
   async pushValues() {
-    const { User, Video } = this.models;
-    const { dataValues: user } = await User.create(
+    const { User } = this.models; // , Video
+    // const { dataValues: user } =
+    await User.create(
       {
         email: 'test@test.com',
         name: 'Test user 1',
