@@ -7,28 +7,37 @@ import { container, TYPES } from './inversifyContainer';
 
 import authRouter from './routes/auth';
 
-const Config = container.get(TYPES.Config);
-async function start() {
+const config = container.get(TYPES.Config);
+
+async function createApp(start) {
   await container.get(TYPES.Repository).done;
-  if (Config.insertTestValues) {
-    await container.get(TYPES.SeedTestValues).done;
+
+  const app = new Koa();
+  const mainRouter = new Router();
+  const apiRouter = new Router();
+
+  mainRouter.get('/', ctx => {
+    ctx.body = 'ok';
+  });
+
+  app.use(cors());
+  app.use(bodyParser());
+  apiRouter.use('/auth', authRouter.routes(), authRouter.allowedMethods());
+  mainRouter.use('/api', apiRouter.routes(), apiRouter.allowedMethods());
+  app.use(mainRouter.allowedMethods());
+  app.use(mainRouter.routes());
+
+  if (start) {
+    app.listen(config.port, () =>
+      global.console.log(`start server on port: ${config.port}`)
+    );
   }
+
+  return app;
 }
 
-start();
+if (!config.test) {
+  createApp(true);
+}
 
-const app = new Koa();
-
-const mainRouter = new Router();
-const apiRouter = new Router();
-
-app.use(cors());
-app.use(bodyParser());
-apiRouter.use('/auth', authRouter.routes(), authRouter.allowedMethods());
-mainRouter.use('/api', apiRouter.routes(), apiRouter.allowedMethods());
-app.use(mainRouter.allowedMethods());
-app.use(mainRouter.routes());
-
-app.listen(Config.port, () =>
-  console.log(`start application on port ${Config.port}`)
-);
+export default createApp;

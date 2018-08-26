@@ -1,12 +1,12 @@
 import 'reflect-metadata';
-import inversify from 'inversify';
+import { Container } from 'inversify/es/inversify.js';
 // MODULES for DI
 import * as configModule from './config/inversify.config';
 import * as repositoryModule from './db/inversify.repository';
 // import * as dbModule from './db/inversify.db';
 // import * as userModelModule from './model/user/inversify.userModel';
 // import * as modelModule from './model/inversify.model';
-import * as seedModule from './scripts/seed/inversify.seed';
+// import * as seedModule from './scripts/seed/inversify.seed';
 import * as ErrorsModule from './helpers/errors/inversify.errors';
 import * as authService from './services/auth/inversify.authService';
 //
@@ -17,12 +17,14 @@ const modules = [
   // dbModule,
   // userModelModule,
   // modelModule,
-  seedModule,
+  // seedModule,
   ErrorsModule,
   authService,
 ];
 
-const container = new inversify.Container();
+// const { Container } = inversify;
+
+const container = new Container();
 
 const TYPES = {};
 modules.forEach(({ LOCALTYPES }) => {

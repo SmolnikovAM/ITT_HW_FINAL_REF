@@ -1,6 +1,11 @@
 import Router from 'koa-router';
+import Ajv from 'ajv';
 
-import { container, TYPES } from '../inversifyContainer';
+import { container, TYPES } from '../../inversifyContainer';
+import { BadRequestError } from '../../helpers/errors';
+import loginSchema from './loginSchema';
+
+const ajv = new Ajv({ allErrors: true });
 
 const router = new Router();
 
@@ -12,14 +17,14 @@ router.get('/:id', async ctx => {
 });
 
 router.post('/login', async ctx => {
+  if (!ajv.validate(loginSchema, ctx.request.body)) {
+    throw new BadRequestError(ajv.errors);
+  }
   const { email, password } = ctx.request.body;
   const authService = container.get(TYPES.AuthService);
-  try {
-    await authService.login({ email, password });
-    ctx.body = 'super';
-  } catch (e) {
-    ctx.body = 'bad';
-  }
+  await authService.login({ email, password });
+
+  ctx.body = 'very good';
 });
 
 export default router;

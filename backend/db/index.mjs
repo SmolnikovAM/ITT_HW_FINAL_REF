@@ -1,5 +1,7 @@
 import Sequielize from 'sequelize';
 
+// import Errors from '../helpers/errors';
+
 import userTableCreate from './repository/dbmodel/user';
 import commentTableCreate from './repository/dbmodel/comment';
 import commentUserLikeTableCreate from './repository/dbmodel/commentUserLike';
@@ -12,13 +14,21 @@ import videoTableCreate from './repository/dbmodel/video';
 import videoPlaylistTableCreate from './repository/dbmodel/videoPlaylist';
 
 import UserRepository from './repository/userRepository';
+import CommentRepository from './repository/commentRepository';
+import CommentUserLikeRepository from './repository/commentUserLikeRepository';
+import NotificationRepository from './repository/notificationRepository';
+import PlaylistRepository from './repository/playlistRepository';
+import RecentlyRepository from './repository/recentlyRepository';
+import SubcribeRepository from './repository/subcribeRepository';
+import VideoRepository from './repository/videoRepository';
+import VideoPlaylistRepository from './repository/videoPlaylistRepository';
+import UserVideoLikeVideoRepository from './repository/userVideoLikeVideoRepository';
 
 export default class Repository {
-  constructor(config, Errors) {
+  constructor(config) {
     this.config = config;
     const { database, username, password, params } = config.db;
     this.sequelize = new Sequielize(database, username, password, params);
-    this.Errors = Errors;
 
     this.loadModels();
     this.modelConnections();
@@ -117,15 +127,31 @@ export default class Repository {
   }
 
   startRepositories() {
-    this.userRepository = new UserRepository(this.models.User, this.Errors);
-    // Comment,
-    // CommentUserLike,
-    // Notification,
-    // Playlist,
-    // Recently,
-    // Subcribe,
-    // Video,
-    // VideoPlaylist,
-    // UserVideoLikeVideo,
+    const {
+      User,
+      Comment,
+      CommentUserLike,
+      Notification,
+      Playlist,
+      Recently,
+      Subcribe,
+      Video,
+      VideoPlaylist,
+      UserVideoLikeVideo,
+    } = this.models;
+    this.userRepository = new UserRepository(User);
+    this.commentRepository = new CommentRepository(Comment);
+    this.commentUserLikeRepository = new CommentUserLikeRepository(
+      CommentUserLike
+    );
+    this.notificationRepository = new NotificationRepository(Notification);
+    this.playlistRepository = new PlaylistRepository(Playlist);
+    this.recentlyRepository = new RecentlyRepository(Recently);
+    this.subcribeRepository = new SubcribeRepository(Subcribe);
+    this.videoRepository = new VideoRepository(Video);
+    this.videoPlaylistRepository = new VideoPlaylistRepository(VideoPlaylist);
+    this.userVideoLikeVideoRepository = new UserVideoLikeVideoRepository(
+      UserVideoLikeVideo
+    );
   }
 }

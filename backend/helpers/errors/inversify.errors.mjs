@@ -1,10 +1,6 @@
-import Errors from '.';
+import * as Errors from '.';
 
-// const Errors = {};
-// Object.keys(ErrorsModule).forEach(key => {
-//   Errors[key] = Symbol(key);
-// });
-
+// console.log(Errors);
 export const LOCALTYPES = {
   Errors: Symbol('Errors'),
 };

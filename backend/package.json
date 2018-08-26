@@ -6,20 +6,46 @@
   "scripts": {
     "start": "node ./index.js",
     "start_es6": "node --experimental-modules ./app",
-    "rebuild": "ITTALENTS_port=3001 ITTALENTS_dbForce=true ITTALENTS_insertTestValues=true ITTALENTS_db__params__logging=true node --experimental-modules ./app",
-    "test": "jest",
+    "seed": "better-npm-run seed",
+    "test": "better-npm-run test",
     "dev_es6": "nodemon --experimental-modules ./app",
     "dev": "nodemon ./index.js"
   },
+  "betterScripts": {
+    "test": {
+      "command": "jest",
+      "env": {
+        "ITTALENTS_test": true,
+        "JWT_connection": "./tests/__data",
+        "JWT_secret": "TEST"
+      }
+    },
+    "seed": {
+      "command": "node ./scripts/seed/runScript.js",
+      "env": {
+        "ITTALENTS_dbForce": true,
+        "ITTALENTS_insertTestValues": true,
+        "ITTALENTS_db__params__logging": true,
+        "ITTALENTS_test": false
+      }
+    }
+  },
   "author": "Andrei Smolnikov",
-  "license": "ISC",
+  "license": "MIT",
   "prettier": {
     "singleQuote": true,
     "trailingComma": true
   },
   "babel": {
     "presets": [
-      "env"
+      [
+        "env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ]
     ]
   },
   "jest": {
@@ -34,7 +60,10 @@
     "moduleFileExtensions": [
       "node",
       "mjs",
-      "js"
+      "js",
+      "json",
+      "ts",
+      "tsx"
     ]
   },
   "eslintConfig": {
@@ -69,9 +98,11 @@
     }
   },
   "devDependencies": {
+    "@types/jest": "^23.3.1",
     "babel-core": "^6.26.3",
     "babel-jest": "^23.4.2",
     "babel-preset-env": "^1.7.0",
+    "better-npm-run": "^0.1.1",
     "eslint": "^5.3.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-config-prettier": "^3.0.1",
@@ -79,15 +110,19 @@
     "jest": "^23.5.0",
     "nodemon": "^1.18.3",
     "prettier": "^1.14.2",
-    "regenerator-runtime": "^0.12.1"
+    "regenerator-runtime": "^0.12.1",
+    "supertest": "^3.1.0",
+    "ts-jest": "^23.1.4"
   },
   "dependencies": {
     "@koa/cors": "^2.2.2",
+    "ajv": "^6.5.3",
     "esm": "^3.0.79",
     "inversify": "^4.13.0",
     "koa": "^2.5.2",
     "koa-bodyparser": "^4.2.1",
     "koa-router": "^7.4.0",
+    "parse-strings-in-object": "^1.2.0",
     "rc": "^1.2.8",
     "reflect-metadata": "^0.1.12",
     "sequelize": "^4.38.0",

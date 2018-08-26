@@ -1,7 +1,7 @@
-import Errors from '../../helpers/errors';
+import { NotAuthorizedError, NotFoundError } from '../../helpers/errors';
 
-const { NotAuthorizedError, NotFoundError } = Errors;
-
+// const { NotAuthorizedError, NotFoundError } = Errors;
+// console.log(NotAuthorizedError);
 export default class Auth {
   constructor({ userRepository }) {
     this.userRepository = userRepository;

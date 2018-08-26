@@ -1,7 +1,8 @@
+// import Errors from '../../helpers/errors';
+
 export default class UserRepository {
-  constructor(User, Errors) {
+  constructor(User) {
     this.User = User;
-    this.Errors = Errors;
   }
 
   getUserBy(id) {

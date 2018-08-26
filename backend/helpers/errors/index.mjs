@@ -1,7 +1,49 @@
-class NotAuthorizedError extends Error {}
+export class NotFoundError extends Error {
+  constructor() {
+    super('Not Found');
+    this.status = 404;
+    this.expose = true;
+  }
+}
 
-class ValidationError extends Error {}
+export class NotAuthorizedError extends Error {
+  constructor() {
+    super('Not Authorized');
+    this.status = 401;
+    this.expose = true;
+  }
+}
 
-class NotFoundError extends Error {}
+export class LogicError extends Error {
+  constructor(message) {
+    let textMsg = 'Error: LogicError\n';
+    if (typeof message === 'object') {
+      try {
+        textMsg += JSON.stringify(message);
+      } catch (e) {}
+    } else {
+      textMsg += message;
+    }
+    super(textMsg);
+    this.status = 400;
+    this.expose = true;
+  }
+}
 
-export default { NotAuthorizedError, ValidationError, NotFoundError };
+export class BadRequestError extends Error {
+  constructor(message) {
+    let textMsg = 'Error: BadRequestError\n';
+    if (typeof message === 'object') {
+      try {
+        textMsg += JSON.stringify(message);
+      } catch (e) {
+        // textMsg = 'BadRequestError';
+      }
+    } else {
+      textMsg += message;
+    }
+    super(textMsg);
+    this.status = 400;
+    this.expose = true;
+  }
+}
