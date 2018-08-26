@@ -2,7 +2,7 @@
   "name": "itt_final_backend",
   "version": "1.0.0",
   "description": "refactoring of final project",
-  "main": "app.mjs",
+  "main": "index.js",
   "scripts": {
     "start": "node ./index.js",
     "start_es6": "node --experimental-modules ./app",
@@ -54,8 +54,8 @@
       "^.+\\.js$": "babel-jest"
     },
     "testMatch": [
-      "**/__tests__/**/*.(m)js",
-      "**/?(*.)+(spec|test).(m)js"
+      "**/__tests__/**/*.js",
+      "**/?(*.)+(spec|test).js"
     ],
     "moduleFileExtensions": [
       "node",
@@ -82,16 +82,7 @@
         }
       ]
     },
-    "settings": {
-      "import/resolver": {
-        "node": {
-          "extensions": [
-            ".js",
-            ".mjs"
-          ]
-        }
-      }
-    },
+    "settings": {},
     "env": {
       "node": true,
       "jest": true

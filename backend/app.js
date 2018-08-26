@@ -9,14 +9,14 @@ import authRouter from './routes/auth';
 
 const config = container.get(TYPES.Config);
 
-async function createApp(start) {
+async function createApp() {
   await container.get(TYPES.Repository).done;
 
   const app = new Koa();
   const mainRouter = new Router();
   const apiRouter = new Router();
 
-  mainRouter.get('/', ctx => {
+  mainRouter.get('/testserver', ctx => {
     ctx.body = 'ok';
   });
 
@@ -27,7 +27,7 @@ async function createApp(start) {
   app.use(mainRouter.allowedMethods());
   app.use(mainRouter.routes());
 
-  if (start) {
+  if (!config.test) {
     app.listen(config.port, () =>
       global.console.log(`start server on port: ${config.port}`)
     );
@@ -37,7 +37,7 @@ async function createApp(start) {
 }
 
 if (!config.test) {
-  createApp(true);
+  createApp();
 }
 
 export default createApp;

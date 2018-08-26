@@ -1,4 +1,4 @@
-import inversify from 'inversify';
+import * as inversify from 'inversify';
 import Repository from '.';
 
 export const LOCALTYPES = {

@@ -1,5 +1,6 @@
 import rc from 'rc';
 import parseSettings from 'parse-strings-in-object';
+
 const APP_NAME = 'ITTALENTS';
 
 // using example

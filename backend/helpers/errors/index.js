@@ -20,7 +20,9 @@ export class LogicError extends Error {
     if (typeof message === 'object') {
       try {
         textMsg += JSON.stringify(message);
-      } catch (e) {}
+      } catch (e) {
+        textMsg += 'recursive link';
+      }
     } else {
       textMsg += message;
     }

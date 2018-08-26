@@ -1,5 +1,6 @@
 import 'reflect-metadata';
-import { Container } from 'inversify/es/inversify.js';
+import * as inversify from 'inversify';
+
 // MODULES for DI
 import * as configModule from './config/inversify.config';
 import * as repositoryModule from './db/inversify.repository';
@@ -22,7 +23,7 @@ const modules = [
   authService,
 ];
 
-// const { Container } = inversify;
+const { Container } = inversify;
 
 const container = new Container();
 
