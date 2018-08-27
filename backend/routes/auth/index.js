@@ -22,9 +22,12 @@ router.post('/login', async ctx => {
   }
   const { email, password } = ctx.request.body;
   const authService = container.get(TYPES.AuthService);
-  await authService.login({ email, password });
+  const { refreshTocken, token } = await authService.login({
+    email,
+    password,
+  });
 
-  ctx.body = 'very good';
+  ctx.body = { refreshTocken, token };
 });
 
 export default router;

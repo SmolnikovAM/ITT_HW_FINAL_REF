@@ -20,6 +20,8 @@ const config = parseSettings(
     },
     dbForce: false,
     test: false,
+    autostart: false,
+    jwtSecret: 'SECRETKEY',
   })
 );
 

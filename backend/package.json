@@ -4,12 +4,11 @@
   "description": "refactoring of final project",
   "main": "index.js",
   "scripts": {
-    "start": "node ./index.js",
-    "start_es6": "node --experimental-modules ./app",
+    "start": "ITTALENTS_autostart=true  node ./index.js",
     "seed": "better-npm-run seed",
     "test": "better-npm-run test",
-    "dev_es6": "nodemon --experimental-modules ./app",
-    "dev": "nodemon ./index.js"
+    "dev": "ITTALENTS_autostart=true nodemon ./index.js",
+    "jestrun": "ITTALENTS_test=true jest"
   },
   "betterScripts": {
     "test": {
@@ -108,8 +107,10 @@
   "dependencies": {
     "@koa/cors": "^2.2.2",
     "ajv": "^6.5.3",
+    "bcryptjs": "^2.4.3",
     "esm": "^3.0.79",
     "inversify": "^4.13.0",
+    "jsonwebtoken": "^8.3.0",
     "koa": "^2.5.2",
     "koa-bodyparser": "^4.2.1",
     "koa-router": "^7.4.0",
@@ -117,6 +118,7 @@
     "rc": "^1.2.8",
     "reflect-metadata": "^0.1.12",
     "sequelize": "^4.38.0",
-    "sqlite3": "^4.0.2"
+    "sqlite3": "^4.0.2",
+    "uuid": "^3.3.2"
   }
 }

@@ -2,7 +2,7 @@ import Koa from 'koa';
 import cors from '@koa/cors';
 import Router from 'koa-router';
 import bodyParser from 'koa-bodyparser';
-
+// import fs from 'fs';
 import { container, TYPES } from './inversifyContainer';
 
 import authRouter from './routes/auth';
@@ -27,17 +27,21 @@ async function createApp() {
   app.use(mainRouter.allowedMethods());
   app.use(mainRouter.routes());
 
-  if (!config.test) {
-    app.listen(config.port, () =>
-      global.console.log(`start server on port: ${config.port}`)
-    );
-  }
-
   return app;
 }
 
-if (!config.test) {
-  createApp();
+async function startServer() {
+  (await createApp()).listen(config.port, () =>
+    global.console.log(`start server on port: ${config.port}`)
+  );
 }
+
+if (config.autostart) {
+  startServer();
+}
+
+// fs.writeFileSync('./log.txt', `config.test - ${JSON.stringify(config)}\n`, {
+//   flag: 'a',
+// });
 
 export default createApp;

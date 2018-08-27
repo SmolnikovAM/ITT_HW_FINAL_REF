@@ -1,3 +1,4 @@
+import bcrypt from 'bcryptjs';
 import { container, TYPES } from '../../inversifyContainer';
 
 async function seed() {
@@ -10,7 +11,7 @@ async function seed() {
     {
       email: 'test@test.com',
       name: 'Test user 1',
-      password: 'password',
+      password: bcrypt.hashSync('password'),
       image: 'https://via.placeholder.com/350x350',
       role: 'ADMIN',
       status: 'ACTIVE',
