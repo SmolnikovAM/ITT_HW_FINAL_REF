@@ -19,20 +19,25 @@ const Repository = {
 
 const authService = new AuthService(Repository, { jwtSecret });
 
-test('login defined', async () => {
+test('Unit. AuthService.login. Function login', async () => {
   expect(authService.login).toBeDefined();
 });
 
-test('password are equal', async () => {
+test('Unit. AuthService.login. Password are equal', async () => {
   expect(
     await authService.login({ password: 'password', email: 'test@test.com' })
   ).toBeDefined();
 });
 
-test('after login user does not have password field', async () => {
-  expect(
-    await authService.login({ password: 'password', email: 'test@test.com' })
-  ).toEqual({ email: 'test@test.com' });
+test('Unit. AuthService.login. After ogin user does not have password field', async () => {
+  const { user } = await authService.login({
+    password: 'password',
+    email: 'test@test.com',
+  });
+
+  const expected = { password: expect.any(String) };
+
+  expect(user).toEqual(expect.not.objectContaining(expected));
 });
 
 test('error with wrong password', async () => {
