@@ -20,7 +20,11 @@ export default class Auth {
 
     return {
       user: rest,
-      token: jwt.sign({ id: user.id }, this.jwtSecret),
+      token: jwt.sign(
+        { id: user.id },
+        this.jwtSecret
+        // , { expiresIn: '600000ms', }
+      ),
       refreshTocken,
     };
   }

@@ -20,6 +20,7 @@ router.post('/login', async ctx => {
   if (!ajv.validate(loginSchema, ctx.request.body)) {
     throw new BadRequestError(ajv.errors);
   }
+  console.log(ctx.state.user);
   const { email, password } = ctx.request.body;
   const authService = container.get(TYPES.AuthService);
   const { refreshTocken, token } = await authService.login({

@@ -2,6 +2,7 @@ import supertest from 'supertest';
 import http from 'http';
 
 import createApp from '../app';
+import { container, TYPES } from '../inversifyContainer';
 
 let app;
 let serverReadyFn;
@@ -16,8 +17,16 @@ createApp()
   .then(serverReadyFn);
 
 test('App works', async () => {
-  // app = supertest.agent(http.createServer(a.callback()));
   await serverReady;
   const res = await app.get('/testserver');
   expect(res.status).toEqual(200);
+});
+
+test('Check test enviroment', async () => {
+  await serverReady;
+
+  const config = container.get(TYPES.Config);
+
+  expect(config.test).toEqual(true);
+  expect(config.autostart).toEqual(false);
 });

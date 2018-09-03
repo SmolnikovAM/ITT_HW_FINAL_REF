@@ -2,14 +2,14 @@ import 'reflect-metadata';
 import * as inversify from 'inversify';
 
 // MODULES for DI
-import * as configModule from './config/inversify.config';
-import * as repositoryModule from './db/inversify.repository';
+import * as configModule from './config/inversify.module';
+import * as repositoryModule from './db/inversify.module';
 // import * as dbModule from './db/inversify.db';
 // import * as userModelModule from './model/user/inversify.userModel';
 // import * as modelModule from './model/inversify.model';
 // import * as seedModule from './scripts/seed/inversify.seed';
-import * as ErrorsModule from './helpers/errors/inversify.errors';
-import * as authService from './services/auth/inversify.authService';
+import * as ErrorsModule from './helpers/errors/inversify.module';
+import * as authService from './services/auth/inversify.module';
 //
 
 const modules = [

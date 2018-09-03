@@ -2,6 +2,8 @@ import Koa from 'koa';
 import cors from '@koa/cors';
 import Router from 'koa-router';
 import bodyParser from 'koa-bodyparser';
+import jwtMiddleware from 'koa-jwt';
+
 // import fs from 'fs';
 import { container, TYPES } from './inversifyContainer';
 
@@ -16,14 +18,36 @@ async function createApp() {
   const mainRouter = new Router();
   const apiRouter = new Router();
 
+  app.use(cors());
+  app.use(bodyParser());
+
+  // app.use((ctx, next) => {
+  //   return next().catch(err => {
+  //     if (401 == err.status) {
+  //       ctx.status = 401;
+  //       console.log(err);
+  //       ctx.body =
+  //         'Protected resource, use Authorization header to get access\n';
+  //     } else {
+  //       throw err;
+  //     }
+  //   });
+  // });
+
+  mainRouter.use(
+    jwtMiddleware({
+      secret: config.jwtSecret,
+      passthrough: true,
+    })
+  );
+
+  apiRouter.use('/auth', authRouter.routes(), authRouter.allowedMethods());
+  mainRouter.use('/api', apiRouter.routes(), apiRouter.allowedMethods());
+
   mainRouter.get('/testserver', ctx => {
     ctx.body = 'ok';
   });
 
-  app.use(cors());
-  app.use(bodyParser());
-  apiRouter.use('/auth', authRouter.routes(), authRouter.allowedMethods());
-  mainRouter.use('/api', apiRouter.routes(), apiRouter.allowedMethods());
   app.use(mainRouter.allowedMethods());
   app.use(mainRouter.routes());
 

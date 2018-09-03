@@ -4,19 +4,31 @@
   "description": "refactoring of final project",
   "main": "index.js",
   "scripts": {
-    "start": "ITTALENTS_autostart=true  node ./index.js",
+    "start": "better-npm-run start",
     "seed": "better-npm-run seed",
     "test": "better-npm-run test",
-    "dev": "ITTALENTS_autostart=true nodemon ./index.js",
-    "jestrun": "ITTALENTS_test=true jest"
+    "dev": "better-npm-run dev"
   },
   "betterScripts": {
+    "start": {
+      "command": "node ./index.js",
+      "env": {
+        "ITTALENTS_autostart": true
+      }
+    },
+    "dev": {
+      "command": "nodemon ./index.js",
+      "env": {
+        "ITTALENTS_autostart": true
+      }
+    },
     "test": {
       "command": "jest",
       "env": {
         "ITTALENTS_test": true,
+        "ITTALENTS_autostart": false,
         "JWT_connection": "./tests/__data",
-        "JWT_secret": "TEST"
+        "JWT_jwtSecret": "TEST"
       }
     },
     "seed": {
@@ -48,6 +60,9 @@
     ]
   },
   "jest": {
+    "globals": {
+      "ITTALENTS_test": true
+    },
     "transform": {
       "^.+\\.mjs$": "babel-jest",
       "^.+\\.js$": "babel-jest"
@@ -113,6 +128,7 @@
     "jsonwebtoken": "^8.3.0",
     "koa": "^2.5.2",
     "koa-bodyparser": "^4.2.1",
+    "koa-jwt": "^3.5.0",
     "koa-router": "^7.4.0",
     "parse-strings-in-object": "^1.2.0",
     "rc": "^1.2.8",

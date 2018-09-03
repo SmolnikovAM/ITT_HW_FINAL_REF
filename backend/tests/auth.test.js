@@ -36,6 +36,7 @@ test('Error login works. Bad password.', async () => {
   expect(res.status).toEqual(401);
 });
 
+//   test('User gets 403 on invalid credentials', async t => {
 test('Error login works.  No user.', async () => {
   await serverReady;
   const res = await app.post('/api/auth/login').send({
@@ -46,10 +47,9 @@ test('Error login works.  No user.', async () => {
   expect(res.status).toEqual(401);
 });
 
-//   test('User gets 403 on invalid credentials', async t => {
-//   test('User receives 401 on expired token', async t => {
-//   test('User can get new access token using refresh token', async t => {
-//   test('User get 404 on invalid refresh token', async t => {
-//   test('User can use refresh token only once', async t => {
-//   test('Refresh tokens become invalid on logout', async t => {
-//   test('Multiple refresh tokens are valid', async t => {
+test('User receives 401 on expired token', async () => {});
+//   test('User can get new access token using refresh token', async () => {})
+//   test('User get 404 on invalid refresh token', async () => {})
+//   test('User can use refresh token only once', async () => {})
+//   test('Refresh tokens become invalid on logout', async () => {})
+//   test('Multiple refresh tokens are valid', async () => {})
