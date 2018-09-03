@@ -1,6 +1,8 @@
 import supertest from 'supertest';
 import http from 'http';
 
+import issueToken from './helpers/issueToken';
+
 import createApp from '../app';
 
 let app;
@@ -8,6 +10,8 @@ let serverReadyFn;
 const serverReady = new Promise(res => {
   serverReadyFn = res;
 });
+
+const authLine = `Bearer ${issueToken({ id: 1 })}`;
 
 createApp()
   .then(a => {
@@ -47,8 +51,35 @@ test('Error login works.  No user.', async () => {
   expect(res.status).toEqual(401);
 });
 
-test('User receives 401 on expired token', async () => {});
-//   test('User can get new access token using refresh token', async () => {})
+test('User get authorized data', async () => {
+  await serverReady;
+  const res = await app.get('/api/auth/mydata').set('Authorization', authLine);
+  const expected = { password: expect.any(String) };
+
+  expect(res.status).toEqual(200);
+  expect(res.body).toEqual(expect.not.objectContaining(expected));
+});
+
+test('User receives 401 on expired token. Check good connection of middleware', async () => {
+  await serverReady;
+  const expiredToken = issueToken({ id: 1 }, { expiresIn: '1ms' });
+
+  const res = await app
+    .get('/api/auth/mydata')
+    .set('Authorization', `Bearer ${expiredToken}`);
+
+  expect(res.status).toEqual(401);
+});
+
+test.skip('User can get new access token using refresh token', async () => {
+  const res = await app.post('/api/auth/refresh').send({
+    refreshToken: 'REFRESH TOKEN 1',
+  });
+
+  expect(res.status).toEqual(200);
+  expect(typeof res.body.token).toEqual('string');
+  expect(typeof res.body.refreshToken).toEqual('string');
+});
 //   test('User get 404 on invalid refresh token', async () => {})
 //   test('User can use refresh token only once', async () => {})
 //   test('Refresh tokens become invalid on logout', async () => {})

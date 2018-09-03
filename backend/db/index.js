@@ -12,6 +12,7 @@ import subcribeTableCreate from './repository/dbmodel/subcribe';
 import userVideoLikeTableCreate from './repository/dbmodel/userVideoLike';
 import videoTableCreate from './repository/dbmodel/video';
 import videoPlaylistTableCreate from './repository/dbmodel/videoPlaylist';
+import refreshTokenTableCreate from './repository/dbmodel/refreshToken';
 
 import UserRepository from './repository/userRepository';
 import CommentRepository from './repository/commentRepository';
@@ -23,6 +24,65 @@ import SubcribeRepository from './repository/subcribeRepository';
 import VideoRepository from './repository/videoRepository';
 import VideoPlaylistRepository from './repository/videoPlaylistRepository';
 import UserVideoLikeVideoRepository from './repository/userVideoLikeVideoRepository';
+import RefreshTokenRepository from './repository/refreshTokenRepository';
+
+const MODULES = [
+  {
+    name: 'User',
+    createTable: userTableCreate,
+    RepositoryClass: UserRepository,
+  },
+  {
+    name: 'Comment',
+    createTable: commentTableCreate,
+    RepositoryClass: CommentRepository,
+  },
+  {
+    name: 'CommentUserLike',
+    createTable: commentUserLikeTableCreate,
+    RepositoryClass: CommentUserLikeRepository,
+  },
+  {
+    name: 'Notification',
+    createTable: notificationTableCreate,
+    RepositoryClass: NotificationRepository,
+  },
+  {
+    name: 'Playlist',
+    createTable: playlistTableCreate,
+    RepositoryClass: PlaylistRepository,
+  },
+  {
+    name: 'RecentlySeen',
+    createTable: recentlySeenTableCreate,
+    RepositoryClass: RecentlyRepository,
+  },
+  {
+    name: 'Subcribe',
+    createTable: subcribeTableCreate,
+    RepositoryClass: SubcribeRepository,
+  },
+  {
+    name: 'Video',
+    createTable: videoTableCreate,
+    RepositoryClass: VideoRepository,
+  },
+  {
+    name: 'VideoPlaylist',
+    createTable: videoPlaylistTableCreate,
+    RepositoryClass: VideoPlaylistRepository,
+  },
+  {
+    name: 'UserVideoLike',
+    createTable: userVideoLikeTableCreate,
+    RepositoryClass: UserVideoLikeVideoRepository,
+  },
+  {
+    name: 'RefreshToken',
+    createTable: refreshTokenTableCreate,
+    RepositoryClass: RefreshTokenRepository,
+  },
+];
 
 export default class Repository {
   constructor(config) {
@@ -31,47 +91,37 @@ export default class Repository {
     this.sequelize = new Sequielize(database, username, password, params);
 
     this.loadModels();
-    this.modelConnections();
-    this.startRepositories();
+    // this.modelConnections();
   }
 
   loadModels() {
-    const User = userTableCreate(this.sequelize);
-    const Comment = commentTableCreate(this.sequelize);
-    const CommentUserLike = commentUserLikeTableCreate(this.sequelize);
-    const Notification = notificationTableCreate(this.sequelize);
-    const Playlist = playlistTableCreate(this.sequelize);
-    const RecentlySeen = recentlySeenTableCreate(this.sequelize);
-    const Subcribe = subcribeTableCreate(this.sequelize);
-    const Video = videoTableCreate(this.sequelize);
-    const VideoPlaylist = videoPlaylistTableCreate(this.sequelize);
-    const UserVideoLike = userVideoLikeTableCreate(this.sequelize);
-    this.models = {
-      User,
-      Comment,
-      CommentUserLike,
-      Notification,
-      Playlist,
-      RecentlySeen,
-      Subcribe,
-      Video,
-      VideoPlaylist,
-      UserVideoLike,
-    };
-
     this.done = new Promise(res => {
       this.resDone = res;
     });
     let promiseChain = Promise.resolve();
-    Object.entries(this.models).forEach(([key, value]) => {
-      this[key] = value;
-      promiseChain = promiseChain.then(() =>
-        value.sync({ force: this.config.dbForce })
-      );
+
+    MODULES.forEach(moduleData => {
+      const { name, createTable } = moduleData;
+      // eslint-disable-next-line no-param-reassign
+      moduleData.model = createTable(this.sequelize);
+      this[name] = moduleData.model;
     });
+
+    this.modelConnections();
+
+    MODULES.forEach(moduleData => {
+      const { name, RepositoryClass } = moduleData;
+      promiseChain = promiseChain
+        .then(() => this[name].sync({ force: this.config.dbForce }))
+        .then(() => {
+          this[`${name}Repository`] = new RepositoryClass(this[name]);
+        });
+    });
+
     promiseChain.then(this.resDone);
   }
 
+  // eslint-disable-next-line
   modelConnections() {
     const {
       User,
@@ -84,10 +134,18 @@ export default class Repository {
       Video,
       VideoPlaylist,
       UserVideoLike,
-    } = this.models;
+      RefreshToken,
+    } = MODULES.reduce((a, { name, model }) => {
+      // eslint-disable-next-line
+      a[name] = model;
+      return a;
+    }, {});
 
     Video.belongsTo(User);
     User.Videos = User.hasMany(Video);
+
+    RefreshToken.belongsTo(User);
+    User.RefreshTokens = User.hasMany(RefreshToken);
 
     Playlist.belongsTo(User);
     User.Playlists = User.hasMany(Playlist);
@@ -124,34 +182,5 @@ export default class Repository {
     User.hasMany(Subcribe);
     Subcribe.belongsTo(User, { as: 'subscribeUser' });
     User.hasMany(Subcribe, { as: 'subscribeUser' });
-  }
-
-  startRepositories() {
-    const {
-      User,
-      Comment,
-      CommentUserLike,
-      Notification,
-      Playlist,
-      Recently,
-      Subcribe,
-      Video,
-      VideoPlaylist,
-      UserVideoLikeVideo,
-    } = this.models;
-    this.userRepository = new UserRepository(User);
-    this.commentRepository = new CommentRepository(Comment);
-    this.commentUserLikeRepository = new CommentUserLikeRepository(
-      CommentUserLike
-    );
-    this.notificationRepository = new NotificationRepository(Notification);
-    this.playlistRepository = new PlaylistRepository(Playlist);
-    this.recentlyRepository = new RecentlyRepository(Recently);
-    this.subcribeRepository = new SubcribeRepository(Subcribe);
-    this.videoRepository = new VideoRepository(Video);
-    this.videoPlaylistRepository = new VideoPlaylistRepository(VideoPlaylist);
-    this.userVideoLikeVideoRepository = new UserVideoLikeVideoRepository(
-      UserVideoLikeVideo
-    );
   }
 }

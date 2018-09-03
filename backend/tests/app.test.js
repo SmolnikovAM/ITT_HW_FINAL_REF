@@ -29,4 +29,5 @@ test('Check test enviroment', async () => {
 
   expect(config.test).toEqual(true);
   expect(config.autostart).toEqual(false);
+  expect(config.jwtSecret).toEqual('TEST');
 });

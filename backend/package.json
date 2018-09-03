@@ -28,7 +28,7 @@
         "ITTALENTS_test": true,
         "ITTALENTS_autostart": false,
         "JWT_connection": "./tests/__data",
-        "JWT_jwtSecret": "TEST"
+        "ITTALENTS_jwtSecret": "TEST"
       }
     },
     "seed": {

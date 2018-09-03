@@ -5,8 +5,9 @@ export default class UserRepository {
     this.User = User;
   }
 
-  getUserBy(id) {
-    return this.User.findOne({ where: { id } });
+  async getUserById(id) {
+    const user = await this.User.findOne({ where: { id } });
+    return user.dataValues;
   }
 
   async getUserByEmail({ email }) {

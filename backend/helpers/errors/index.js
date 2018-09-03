@@ -1,14 +1,30 @@
+function convert(message) {
+  let textMsg = '';
+  if (typeof message === 'object') {
+    try {
+      textMsg += JSON.stringify(message);
+    } catch (e) {
+      textMsg += 'recursive link in message';
+    }
+  } else {
+    textMsg += message;
+  }
+  return textMsg;
+}
+
 export class NotFoundError extends Error {
-  constructor() {
-    super('Not Found');
+  constructor(message) {
+    const textMsg = `Error: Not Found\n${convert(message)}`;
+    super(textMsg);
     this.status = 404;
     this.expose = true;
   }
 }
 
 export class NotAuthorizedError extends Error {
-  constructor() {
-    super('Not Authorized');
+  constructor(message) {
+    const textMsg = `Error: Not Authorized\n${convert(message)}`;
+    super(textMsg);
     this.status = 401;
     this.expose = true;
   }
@@ -16,16 +32,7 @@ export class NotAuthorizedError extends Error {
 
 export class LogicError extends Error {
   constructor(message) {
-    let textMsg = 'Error: LogicError\n';
-    if (typeof message === 'object') {
-      try {
-        textMsg += JSON.stringify(message);
-      } catch (e) {
-        textMsg += 'recursive link';
-      }
-    } else {
-      textMsg += message;
-    }
+    const textMsg = `Error: LogicError\n${convert(message)}`;
     super(textMsg);
     this.status = 400;
     this.expose = true;
@@ -34,16 +41,7 @@ export class LogicError extends Error {
 
 export class BadRequestError extends Error {
   constructor(message) {
-    let textMsg = 'Error: BadRequestError\n';
-    if (typeof message === 'object') {
-      try {
-        textMsg += JSON.stringify(message);
-      } catch (e) {
-        // textMsg = 'BadRequestError';
-      }
-    } else {
-      textMsg += message;
-    }
+    const textMsg = `Error: BadRequestError\n${convert(message)}`;
     super(textMsg);
     this.status = 400;
     this.expose = true;

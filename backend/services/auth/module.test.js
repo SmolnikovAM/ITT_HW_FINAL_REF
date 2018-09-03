@@ -8,7 +8,7 @@ const EMAIL = 'test@test.com';
 const jwtSecret = 'secret';
 
 const Repository = {
-  userRepository: {
+  UserRepository: {
     getUserByEmail({ email }) {
       if (email === EMAIL)
         return { password: bcrypt.hashSync(PASSWORD), email };
