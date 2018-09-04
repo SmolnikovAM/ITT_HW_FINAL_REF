@@ -41,7 +41,10 @@ async function seed() {
             'https://www.sample-videos.com/video/mp4/480/big_buck_bunny_480p_10mb.mp4',
         },
       ],
-      refreshTokens: [{ token: 'REFRESH TOKEN 1', status: 'ACTIVE' }],
+      refreshTokens: [
+        { token: 'REFRESH TOKEN 1', status: 'ACTIVE' },
+        { token: 'REFRESH TOKEN 2', status: 'ACTIVE' },
+      ],
     },
     {
       include: [User.Videos, User.RefreshTokens],

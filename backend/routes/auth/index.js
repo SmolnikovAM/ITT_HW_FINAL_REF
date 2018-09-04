@@ -7,7 +7,9 @@ import {
   NotAuthorizedError,
   NotFoundError,
 } from '../../helpers/errors';
+
 import loginSchema from './loginSchema';
+import refreshSchema from './refreshSchema';
 
 const ajv = new Ajv({ allErrors: true });
 
@@ -33,12 +35,30 @@ router.post('/login', async ctx => {
   }
   const { email, password } = ctx.request.body;
   const authService = container.get(TYPES.AuthService);
-  const { refreshTocken, token } = await authService.login({
+  const { refreshToken, token } = await authService.login({
     email,
     password,
   });
 
-  ctx.body = { refreshTocken, token };
+  ctx.body = { refreshToken, token };
+});
+
+router.post('/refresh', async ctx => {
+  if (!ajv.validate(refreshSchema, ctx.request.body)) {
+    throw new BadRequestError(ajv.errors);
+  }
+  // const { refreshToken } = ctx.request.body;
+  // const refreshTokenService = container.get(TYPES.RefreshTokenService);
+  // await refreshTokenService;
+
+  // const { refreshTocken, token } = await authService.login({
+  //   email,
+  //   password,
+  // });
+
+  // const token = '';
+
+  ctx.body = { refreshToken: '1', token: '1' };
 });
 
 export default router;

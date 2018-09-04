@@ -16,7 +16,7 @@ export default class Auth {
       throw new NotAuthorizedError();
     }
     const { password, ...rest } = user;
-    const refreshTocken = uuid();
+    const refreshToken = uuid();
 
     return {
       user: rest,
@@ -25,7 +25,7 @@ export default class Auth {
         this.jwtSecret
         // , { expiresIn: '600000ms', }
       ),
-      refreshTocken,
+      refreshToken,
     };
   }
 }

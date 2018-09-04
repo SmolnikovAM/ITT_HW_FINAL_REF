@@ -28,6 +28,7 @@ test('User can succesfully login', async () => {
 
   expect(res.status).toEqual(200);
   expect(typeof res.body.token).toBe('string');
+  expect(typeof res.body.refreshToken).toBe('string');
 });
 
 test('Error login works. Bad password.', async () => {
@@ -71,16 +72,20 @@ test('User receives 401 on expired token. Check good connection of middleware', 
   expect(res.status).toEqual(401);
 });
 
-test.skip('User can get new access token using refresh token', async () => {
+test('User can get new access token using refresh token', async () => {
+  const REFRESH_TOKEN = 'REFRESH TOKEN 1';
+
   const res = await app.post('/api/auth/refresh').send({
-    refreshToken: 'REFRESH TOKEN 1',
+    refreshToken: REFRESH_TOKEN,
   });
 
   expect(res.status).toEqual(200);
   expect(typeof res.body.token).toEqual('string');
   expect(typeof res.body.refreshToken).toEqual('string');
+  expect(res.body.refreshToken).not.toEqual(REFRESH_TOKEN);
 });
-//   test('User get 404 on invalid refresh token', async () => {})
-//   test('User can use refresh token only once', async () => {})
-//   test('Refresh tokens become invalid on logout', async () => {})
-//   test('Multiple refresh tokens are valid', async () => {})
+
+test.skip('User get 404 on invalid refresh token', async () => {});
+test.skip('User can use refresh token only once', async () => {});
+test.skip('Refresh tokens become invalid on logout', async () => {});
+test.skip('Multiple refresh tokens are valid', async () => {});

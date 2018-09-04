@@ -89,9 +89,8 @@ export default class Repository {
     this.config = config;
     const { database, username, password, params } = config.db;
     this.sequelize = new Sequielize(database, username, password, params);
-
+    this.MODULES = MODULES;
     this.loadModels();
-    // this.modelConnections();
   }
 
   loadModels() {
@@ -100,7 +99,7 @@ export default class Repository {
     });
     let promiseChain = Promise.resolve();
 
-    MODULES.forEach(moduleData => {
+    this.MODULES.forEach(moduleData => {
       const { name, createTable } = moduleData;
       // eslint-disable-next-line no-param-reassign
       moduleData.model = createTable(this.sequelize);
@@ -109,7 +108,7 @@ export default class Repository {
 
     this.modelConnections();
 
-    MODULES.forEach(moduleData => {
+    this.MODULES.forEach(moduleData => {
       const { name, RepositoryClass } = moduleData;
       promiseChain = promiseChain
         .then(() => this[name].sync({ force: this.config.dbForce }))
@@ -121,7 +120,6 @@ export default class Repository {
     promiseChain.then(this.resDone);
   }
 
-  // eslint-disable-next-line
   modelConnections() {
     const {
       User,
@@ -135,8 +133,8 @@ export default class Repository {
       VideoPlaylist,
       UserVideoLike,
       RefreshToken,
-    } = MODULES.reduce((a, { name, model }) => {
-      // eslint-disable-next-line
+    } = this.MODULES.reduce((a, { name, model }) => {
+      // eslint-disable-next-line no-param-reassign
       a[name] = model;
       return a;
     }, {});
