@@ -5,9 +5,43 @@ import uuid from 'uuid/v4';
 import { NotAuthorizedError } from '../../helpers/errors';
 
 export default class Auth {
-  constructor({ UserRepository }, config) {
+  constructor({ UserRepository, RefreshTokenRepository }, config) {
     this.UserRepository = UserRepository;
+    this.RefreshTokenRepository = RefreshTokenRepository;
     this.jwtSecret = config.jwtSecret;
+  }
+
+  async findRefreshToken({ token, userId }) {
+    if (token) {
+      return this.RefreshTokenRepository.getTokenRowByToken(token);
+    }
+    if (userId) {
+      return this.RefreshTokenRepository.getTokenRowByUserId(token);
+    }
+    return null;
+  }
+
+  // async createRefreshToken({ token, userId }) {
+  // }
+
+  async removeRefreshToken({ token }) {
+    return this.RefreshTokenRepository.removeTokenRowByToken({ token });
+  }
+
+  async issueTokensForUserId({ userId, options = {} }) {
+    const refreshToken = uuid();
+    await this.RefreshTokenRepository.addTokenForUserId({
+      token: refreshToken,
+      userId,
+    });
+    return {
+      token: jwt.sign(
+        { id: userId },
+        this.jwtSecret,
+        options // { expiresIn: '600000ms', }
+      ),
+      refreshToken,
+    };
   }
 
   async login({ password: pass, email }) {
@@ -16,16 +50,8 @@ export default class Auth {
       throw new NotAuthorizedError();
     }
     const { password, ...rest } = user;
-    const refreshToken = uuid();
-
-    return {
-      user: rest,
-      token: jwt.sign(
-        { id: user.id },
-        this.jwtSecret
-        // , { expiresIn: '600000ms', }
-      ),
-      refreshToken,
-    };
+    const tokens = await this.issueTokensForUserId({ userId: user.id });
+    tokens.user = rest;
+    return tokens;
   }
 }

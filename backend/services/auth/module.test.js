@@ -15,6 +15,11 @@ const Repository = {
       return null;
     },
   },
+  RefreshTokenRepository: {
+    addTokenForUserId() {
+      return Promise.resolve();
+    },
+  },
 };
 
 const authService = new AuthService(Repository, { jwtSecret });

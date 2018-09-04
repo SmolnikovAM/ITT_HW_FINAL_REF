@@ -47,18 +47,17 @@ router.post('/refresh', async ctx => {
   if (!ajv.validate(refreshSchema, ctx.request.body)) {
     throw new BadRequestError(ajv.errors);
   }
-  // const { refreshToken } = ctx.request.body;
-  // const refreshTokenService = container.get(TYPES.RefreshTokenService);
-  // await refreshTokenService;
-
-  // const { refreshTocken, token } = await authService.login({
-  //   email,
-  //   password,
-  // });
-
-  // const token = '';
-
-  ctx.body = { refreshToken: '1', token: '1' };
+  const { refreshToken } = ctx.request.body;
+  const authService = container.get(TYPES.AuthService);
+  const tokenItem = await authService.findRefreshToken({ token: refreshToken });
+  if (!tokenItem) {
+    throw new NotFoundError('Token not found');
+  }
+  const { userId, token } = tokenItem;
+  await authService.removeRefreshToken({ token });
+  ctx.body = await authService.issueTokensForUserId({
+    userId,
+  });
 });
 
 export default router;

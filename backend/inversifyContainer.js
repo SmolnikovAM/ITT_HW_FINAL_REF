@@ -10,7 +10,7 @@ import * as repositoryModule from './db/inversify.module';
 // import * as seedModule from './scripts/seed/inversify.seed';
 import * as ErrorsModule from './helpers/errors/inversify.module';
 import * as authService from './services/auth/inversify.module';
-import * as refreshTokenService from './services/refreshToken/inversify.module';
+// import * as refreshTokenService from './services/refreshToken/inversify.module';
 //
 
 const modules = [
@@ -22,7 +22,7 @@ const modules = [
   // seedModule,
   ErrorsModule,
   authService,
-  refreshTokenService,
+  // refreshTokenService,
 ];
 
 const { Container } = inversify;
