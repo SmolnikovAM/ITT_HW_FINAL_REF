@@ -28,6 +28,10 @@ export default class Auth {
     return this.RefreshTokenRepository.removeTokenRowByToken({ token });
   }
 
+  async removeRefreshTokenForUser({ userId }) {
+    return this.RefreshTokenRepository.removeTokenRowsByUserId({ userId });
+  }
+
   async issueTokensForUserId({ userId, options = {} }) {
     const refreshToken = uuid();
     await this.RefreshTokenRepository.addTokenForUserId({
@@ -54,4 +58,15 @@ export default class Auth {
     tokens.user = rest;
     return tokens;
   }
+
+  // async logout({ userId }) {
+  //   const user = await this.UserRepository.getUserByEmail({ email });
+  //   if (!user || !bcrypt.compareSync(pass, user.password)) {
+  //     throw new NotAuthorizedError();
+  //   }
+  //   const { password, ...rest } = user;
+  //   const tokens = await this.issueTokensForUserId({ userId: user.id });
+  //   tokens.user = rest;
+  //   return tokens;
+  // }
 }

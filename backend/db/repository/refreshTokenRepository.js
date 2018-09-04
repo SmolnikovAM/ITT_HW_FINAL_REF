@@ -1,14 +1,10 @@
-import uuid from 'uuid/v4';
-
-// import Errors from '../../helpers/errors';
-
 export default class UserRepository {
   constructor(RefreshToken) {
     this.RefreshToken = RefreshToken;
   }
 
-  async getTokenRowByUserId(userId) {
-    const tokenRow = await this.RefreshToken.findOne({
+  async getTokenRowsByUserId(userId) {
+    const tokenRow = await this.RefreshToken.find({
       where: { userId, status: 'ACTIVE' },
     });
     return tokenRow;
@@ -30,6 +26,15 @@ export default class UserRepository {
       { status: 'INACTIVE' },
       {
         where: { token },
+      }
+    );
+  }
+
+  removeTokenRowsByUserId({ userId }) {
+    return this.RefreshToken.update(
+      { status: 'INACTIVE' },
+      {
+        where: { userId },
       }
     );
   }

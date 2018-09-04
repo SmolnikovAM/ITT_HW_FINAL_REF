@@ -60,4 +60,14 @@ router.post('/refresh', async ctx => {
   });
 });
 
+router.post('/logout', async ctx => {
+  if (!ctx.state || !ctx.state.user) {
+    throw new NotAuthorizedError();
+  }
+  const { id: userId } = ctx.state.user;
+  const authService = container.get(TYPES.AuthService);
+  await authService.removeRefreshTokenForUser({ userId });
+  ctx.body = 'Logout success';
+});
+
 export default router;
