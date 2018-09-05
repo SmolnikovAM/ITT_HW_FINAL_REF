@@ -2,32 +2,16 @@ import Router from 'koa-router';
 import Ajv from 'ajv';
 
 import { container, TYPES } from '../../inversifyContainer';
-import {
-  BadRequestError,
-  NotAuthorizedError,
-  NotFoundError,
-} from '../../helpers/errors';
 
 import loginSchema from './loginSchema';
 import refreshSchema from './refreshSchema';
 
+const { BadRequestError, NotAuthorizedError, NotFoundError } = container.get(
+  TYPES.Errors
+);
+
 const ajv = new Ajv({ allErrors: true });
-
 const router = new Router();
-
-router.get('/mydata', async ctx => {
-  if (!ctx.state || !ctx.state.user) {
-    throw new NotAuthorizedError('You have to Authorize');
-  }
-  const { id: userId } = ctx.state.user;
-  const { UserRepository } = container.get(TYPES.Repository);
-  try {
-    const { password, ...user } = await UserRepository.getUserById(userId);
-    ctx.body = user;
-  } catch (e) {
-    throw new NotFoundError(`No user with such id ${userId}`);
-  }
-});
 
 router.post('/login', async ctx => {
   if (!ajv.validate(loginSchema, ctx.request.body)) {

@@ -2,13 +2,18 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import uuid from 'uuid/v4';
 
-import { NotAuthorizedError } from '../../helpers/errors';
+// import { NotAuthorizedError } from '../../helpers/errors';
 
 export default class Auth {
-  constructor({ UserRepository, RefreshTokenRepository }, config) {
+  constructor(
+    { UserRepository, RefreshTokenRepository },
+    config,
+    { NotAuthorizedError }
+  ) {
     this.UserRepository = UserRepository;
     this.RefreshTokenRepository = RefreshTokenRepository;
     this.jwtSecret = config.jwtSecret;
+    this.NotAuthorizedError = NotAuthorizedError;
   }
 
   async findRefreshToken({ token, userId }) {
@@ -51,7 +56,7 @@ export default class Auth {
   async login({ password: pass, email }) {
     const user = await this.UserRepository.getUserByEmail({ email });
     if (!user || !bcrypt.compareSync(pass, user.password)) {
-      throw new NotAuthorizedError();
+      throw new this.NotAuthorizedError();
     }
     const { password, ...rest } = user;
     const tokens = await this.issueTokensForUserId({ userId: user.id });

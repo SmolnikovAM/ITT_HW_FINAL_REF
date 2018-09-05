@@ -8,6 +8,7 @@ import jwtMiddleware from 'koa-jwt';
 import { container, TYPES } from './inversifyContainer';
 
 import authRouter from './routes/auth';
+import userRouter from './routes/user';
 
 const config = container.get(TYPES.Config);
 
@@ -42,6 +43,8 @@ async function createApp() {
   );
 
   apiRouter.use('/auth', authRouter.routes(), authRouter.allowedMethods());
+  apiRouter.use('/user', userRouter.routes(), userRouter.allowedMethods());
+
   mainRouter.use('/api', apiRouter.routes(), apiRouter.allowedMethods());
 
   mainRouter.get('/testserver', ctx => {

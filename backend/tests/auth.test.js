@@ -12,8 +12,6 @@ const serverReady = new Promise(res => {
   serverReadyFn = res;
 });
 
-const authLine = `Bearer ${issueToken({ id: 1 })}`;
-
 createApp()
   .then(a => {
     app = supertest.agent(http.createServer(a.callback()));
@@ -28,8 +26,12 @@ test('User can succesfully login', async () => {
   });
 
   expect(res.status).toEqual(200);
-  expect(typeof res.body.token).toBe('string');
-  expect(typeof res.body.refreshToken).toBe('string');
+  expect(res.body).toEqual(
+    expect.objectContaining({
+      token: expect.any(String),
+      refreshToken: expect.any(String),
+    })
+  );
 
   const resRefresshToken = await app.post('/api/auth/refresh').send({
     refreshToken: res.body.refreshToken,
@@ -57,26 +59,6 @@ test('Error login works.  No user.', async () => {
     email: 'notvalid@notvalid.com',
     password: 'NOTVALID',
   });
-
-  expect(res.status).toEqual(401);
-});
-
-test('User get authorized data', async () => {
-  await serverReady;
-  const res = await app.get('/api/auth/mydata').set('Authorization', authLine);
-  const expected = { password: expect.any(String) };
-
-  expect(res.status).toEqual(200);
-  expect(res.body).toEqual(expect.not.objectContaining(expected));
-});
-
-test('User receives 401 on expired token. Check good connection of middleware', async () => {
-  await serverReady;
-  const expiredToken = issueToken({ id: 1 }, { expiresIn: '1ms' });
-
-  const res = await app
-    .get('/api/auth/mydata')
-    .set('Authorization', `Bearer ${expiredToken}`);
 
   expect(res.status).toEqual(401);
 });

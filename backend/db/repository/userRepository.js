@@ -1,5 +1,3 @@
-// import Errors from '../../helpers/errors';
-
 export default class UserRepository {
   constructor(User) {
     this.User = User;
@@ -12,5 +10,9 @@ export default class UserRepository {
 
   async getUserByEmail({ email }) {
     return this.User.findOne({ where: { email } });
+  }
+
+  async addUser({ password, name, email }) {
+    return this.User.create({ password, name, email });
   }
 }

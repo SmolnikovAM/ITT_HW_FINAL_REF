@@ -22,7 +22,11 @@ const Repository = {
   },
 };
 
-const authService = new AuthService(Repository, { jwtSecret });
+const authService = new AuthService(
+  Repository,
+  { jwtSecret },
+  { NotAuthorizedError }
+);
 
 test('Unit. AuthService.login. Function login', async () => {
   expect(authService.login).toBeDefined();

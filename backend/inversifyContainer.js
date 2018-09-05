@@ -8,8 +8,10 @@ import * as repositoryModule from './db/inversify.module';
 // import * as userModelModule from './model/user/inversify.userModel';
 // import * as modelModule from './model/inversify.model';
 // import * as seedModule from './scripts/seed/inversify.seed';
-import * as ErrorsModule from './helpers/errors/inversify.module';
+import * as errorsModule from './helpers/errors/inversify.module';
 import * as authService from './services/auth/inversify.module';
+import * as userService from './services/user/inversify.module';
+
 // import * as refreshTokenService from './services/refreshToken/inversify.module';
 //
 
@@ -20,8 +22,9 @@ const modules = [
   // userModelModule,
   // modelModule,
   // seedModule,
-  ErrorsModule,
+  errorsModule,
   authService,
+  userService,
   // refreshTokenService,
 ];
 
