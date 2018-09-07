@@ -21,8 +21,12 @@ createApp()
   })
   .then(serverReadyFn);
 
-test('Create new user', async () => {
+beforeEach(async done => {
   await serverReady;
+  done();
+});
+
+test('Create new user', async () => {
   const EMAIL = 'TEST_EMAIL_FOR_CREATION_USER@mail.com';
   const { User, RefreshToken } = container.get(TYPES.Repository);
   const user = await User.findOne({ where: { email: EMAIL } });
@@ -55,7 +59,6 @@ test('Create new user', async () => {
 });
 
 test('User get authorized data', async () => {
-  await serverReady;
   const res = await app.get('/api/user/mydata').set('Authorization', authLine);
   const expected = { password: expect.any(String) };
 
@@ -64,7 +67,6 @@ test('User get authorized data', async () => {
 });
 
 test('User receives 401 on expired token. Check good connection of middleware', async () => {
-  await serverReady;
   const expiredToken = issueToken({ id: 1 }, { expiresIn: '1ms' });
 
   const res = await app
@@ -75,7 +77,6 @@ test('User receives 401 on expired token. Check good connection of middleware', 
 });
 
 test('User cannot create new account if he already logged. Expect 400', async () => {
-  await serverReady;
   const EMAIL = `${uuid()}@test.com`;
   const resCreateUser = await app
     .post('/api/user/add')
@@ -91,7 +92,6 @@ test('User cannot create new account if he already logged. Expect 400', async ()
 });
 
 test('User cannot create new account if email alredy in use. Expect 400 ', async () => {
-  await serverReady;
   const EMAIL = `test@test.com`;
   const resCreateUser = await app
     .post('/api/user/add')
@@ -107,7 +107,6 @@ test('User cannot create new account if email alredy in use. Expect 400 ', async
 });
 
 test('User cannot create new account with not equal passwords. Expect 400 ', async () => {
-  await serverReady;
   const EMAIL = `${uuid()}@test.com`;
   const resCreateUser = await app
     .post('/api/user/add')
@@ -123,7 +122,6 @@ test('User cannot create new account with not equal passwords. Expect 400 ', asy
 });
 
 test('User cannot create new account with not valid body format. Expect 400 ', async () => {
-  await serverReady;
   const EMAIL = `${uuid()}@test.com`;
   const resCreateUser = await app
     .post('/api/user/add')

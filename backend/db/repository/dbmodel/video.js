@@ -10,21 +10,19 @@ export default sequelize =>
     image: { type: Sequelize.STRING },
     status: {
       type: Sequelize.STRING,
-      isIn: [['ACTIVE', 'BLOCK', 'PENDING']],
-      defaultValue: 'ACTIVE',
+      isIn: [['ACTIVE', 'BLOCK', 'PENDING', 'UPLOAD', 'CONVERTING', 'DELETED']],
+      defaultValue: 'UPLOAD',
     },
     likesCount: { type: Sequelize.INTEGER, defaultValue: 0 },
     dislikesCount: { type: Sequelize.INTEGER, defaultValue: 0 },
     postDate: { type: Sequelize.DATE, defaultValue: Sequelize.NOW },
     tag: { type: Sequelize.STRING },
     uuid: { type: Sequelize.STRING },
-    visibility: {
+    access: {
       type: Sequelize.STRING,
       isIn: [['PUBLIC', 'PRIVATE']],
       defaultValue: 'PUBLIC',
     },
-    lowQuality: { type: Sequelize.STRING },
-    highQuality: { type: Sequelize.STRING },
     duration: { type: Sequelize.STRING },
   });
 

@@ -18,8 +18,12 @@ createApp()
   })
   .then(serverReadyFn);
 
-test('User can succesfully login', async () => {
+beforeEach(async done => {
   await serverReady;
+  done();
+});
+
+test('User can succesfully login', async () => {
   const res = await app.post('/api/auth/login').send({
     email: 'test@test.com',
     password: 'password',
@@ -43,7 +47,6 @@ test('User can succesfully login', async () => {
 });
 
 test('Error login works. Bad password.', async () => {
-  await serverReady;
   const res = await app.post('/api/auth/login').send({
     email: 'test@test.com',
     password: 'NOTVALID',
@@ -54,7 +57,6 @@ test('Error login works. Bad password.', async () => {
 
 //   test('User gets 403 on invalid credentials', async t => {
 test('Error login works.  No user.', async () => {
-  await serverReady;
   const res = await app.post('/api/auth/login').send({
     email: 'notvalid@notvalid.com',
     password: 'NOTVALID',
@@ -64,7 +66,6 @@ test('Error login works.  No user.', async () => {
 });
 
 test('User can get new access token using refresh token', async () => {
-  await serverReady;
   const { RefreshToken } = container.get(TYPES.Repository);
   const { token } = await RefreshToken.findOne({ where: { id: 1 } });
   await RefreshToken.update({ status: 'ACTIVE' }, { where: { id: 1 } });
@@ -100,7 +101,6 @@ test('User get 404 on invalid refresh token', async () => {
 });
 
 test('User can use refresh token only once', async () => {
-  await serverReady;
   const { RefreshToken } = container.get(TYPES.Repository);
   const { token } = await RefreshToken.findOne({ where: { id: 2 } });
   await RefreshToken.update({ status: 'ACTIVE' }, { where: { id: 2 } });
@@ -127,16 +127,12 @@ test('User can use refresh token only once', async () => {
 });
 
 test('Unauthorized user want to logout. throw 401', async () => {
-  await serverReady;
-
   const res = await app.post('/api/auth/logout');
 
   expect(res.status).toBe(401);
 });
 
 test('Refresh tokens become invalid on logout', async () => {
-  await serverReady;
-
   const { RefreshToken } = container.get(TYPES.Repository);
   await RefreshToken.update({ status: 'ACTIVE' }, { where: { userId: 2 } });
 
@@ -162,8 +158,6 @@ test('Refresh tokens become invalid on logout', async () => {
 });
 
 test('Multiple refresh tokens are valid', async () => {
-  await serverReady;
-
   const resLogin1 = await app.post('/api/auth/login').send({
     email: 'test3@test.com',
     password: 'password',

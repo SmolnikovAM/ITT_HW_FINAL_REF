@@ -21,6 +21,15 @@ export class NotFoundError extends Error {
   }
 }
 
+export class AccessDeniedError extends Error {
+  constructor(message) {
+    const textMsg = `Error: Access denyed\n${convert(message)}`;
+    super(textMsg);
+    this.status = 403;
+    this.expose = true;
+  }
+}
+
 export class NotAuthorizedError extends Error {
   constructor(message) {
     const textMsg = `Error: Not Authorized\n${convert(message)}`;

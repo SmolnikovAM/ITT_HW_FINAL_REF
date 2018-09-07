@@ -3,12 +3,14 @@ import cors from '@koa/cors';
 import Router from 'koa-router';
 import bodyParser from 'koa-bodyparser';
 import jwtMiddleware from 'koa-jwt';
+import koaStaticMiddleware from 'koa-static';
 
 // import fs from 'fs';
 import { container, TYPES } from './inversifyContainer';
 
 import authRouter from './routes/auth';
 import userRouter from './routes/user';
+import videoRouter from './routes/video';
 
 const config = container.get(TYPES.Config);
 
@@ -44,6 +46,7 @@ async function createApp() {
 
   apiRouter.use('/auth', authRouter.routes(), authRouter.allowedMethods());
   apiRouter.use('/user', userRouter.routes(), userRouter.allowedMethods());
+  apiRouter.use('/video', videoRouter.routes(), videoRouter.allowedMethods());
 
   mainRouter.use('/api', apiRouter.routes(), apiRouter.allowedMethods());
 
@@ -53,6 +56,8 @@ async function createApp() {
 
   app.use(mainRouter.allowedMethods());
   app.use(mainRouter.routes());
+
+  app.use(koaStaticMiddleware(config.staticFolder));
 
   return app;
 }

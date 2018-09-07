@@ -1,5 +1,5 @@
 export default class UserRepository {
-  constructor(User) {
+  constructor({ User }) {
     this.User = User;
   }
 

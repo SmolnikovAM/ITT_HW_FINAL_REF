@@ -1,12 +1,37 @@
 import bcrypt from 'bcryptjs';
+import fs from 'fs';
+import * as util from 'util';
+
 import { container, TYPES } from '../../inversifyContainer';
+
+function getStat(...args) {
+  return util.promisify(fs.stat)(...args);
+}
+
+async function createFolders() {
+  const { staticFolder, videoFolder, tmpFolder } = container.get(TYPES.Config);
+
+  [staticFolder, videoFolder, tmpFolder].forEach(async path => {
+    try {
+      const pathDesription = await getStat(path);
+      if (!pathDesription.isDirectory())
+        throw new Error(`path is not folder: "${path}" `);
+    } catch (err) {
+      if (err.code === 'ENOENT') {
+        fs.mkdirSync(path);
+      } else {
+        throw err;
+      }
+    }
+  });
+}
 
 async function seed() {
   global.console.log('start creating repository');
   await container.get(TYPES.Repository).done;
   global.console.log('start push User data');
 
-  const { User } = container.get(TYPES.Repository);
+  const { User, Video } = container.get(TYPES.Repository);
   await User.create(
     {
       email: 'test@test.com',
@@ -23,22 +48,28 @@ async function seed() {
           about: 'good',
           image: 'https://via.placeholder.com/350x350',
           tag: 'sport',
-          uuid: '123456',
-          lowQuality:
-            'https://www.sample-videos.com/video/mp4/480/big_buck_bunny_480p_10mb.mp4',
-          highQuality:
-            'https://www.sample-videos.com/video/mp4/480/big_buck_bunny_480p_10mb.mp4',
+          uuid: 'UUID01_PUBLIC',
+          videoFiles: [
+            { uuid: 'test_video_1_file_1', resolution: '240x240' },
+            {
+              uuid: 'test_video_1_file_2',
+              resolution: '340x340',
+              status: 'TODELETE',
+            },
+          ],
+          //   'https://www.sample-videos.com/video/mp4/480/big_buck_bunny_480p_10mb.mp4',
         },
         {
           name: 'video 2',
           about: 'good',
           image: 'https://via.placeholder.com/350x350',
           tag: 'sport',
-          uuid: '1234567',
-          lowQuality:
-            'https://www.sample-videos.com/video/mp4/480/big_buck_bunny_480p_10mb.mp4',
-          highQuality:
-            'https://www.sample-videos.com/video/mp4/480/big_buck_bunny_480p_10mb.mp4',
+          uuid: 'UUID02_PRIVATE',
+          access: 'PRIVATE',
+          videoFiles: [
+            { uuid: 'test_video_2_file_3', resolution: '240x240' },
+            { uuid: 'test_video_2_file_4', resolution: '340x340' },
+          ],
         },
       ],
       refreshTokens: [
@@ -47,7 +78,13 @@ async function seed() {
       ],
     },
     {
-      include: [User.Videos, User.RefreshTokens],
+      include: [
+        {
+          association: User.Videos,
+          include: [Video.VideoFiles],
+        },
+        User.RefreshTokens,
+      ],
     }
   );
 
@@ -67,22 +104,16 @@ async function seed() {
           about: 'good',
           image: 'https://via.placeholder.com/350x350',
           tag: 'sport',
-          uuid: '123456',
-          lowQuality:
-            'https://www.sample-videos.com/video/mp4/480/big_buck_bunny_480p_10mb.mp4',
-          highQuality:
-            'https://www.sample-videos.com/video/mp4/480/big_buck_bunny_480p_10mb.mp4',
+          uuid: 'UUID03',
+          videoFiles: [{ uuid: 'test_video_3_file_5', resolution: '240x240' }],
         },
         {
           name: 'video 4',
           about: 'good',
           image: 'https://via.placeholder.com/350x350',
           tag: 'sport',
-          uuid: '1234567',
-          lowQuality:
-            'https://www.sample-videos.com/video/mp4/480/big_buck_bunny_480p_10mb.mp4',
-          highQuality:
-            'https://www.sample-videos.com/video/mp4/480/big_buck_bunny_480p_10mb.mp4',
+          uuid: 'UUID04',
+          videoFiles: [{ uuid: 'test_video_4_file_6', resolution: '240x240' }],
         },
       ],
       refreshTokens: [
@@ -91,7 +122,13 @@ async function seed() {
       ],
     },
     {
-      include: [User.Videos, User.RefreshTokens],
+      include: [
+        {
+          association: User.Videos,
+          include: [Video.VideoFiles],
+        },
+        User.RefreshTokens,
+      ],
     }
   );
 
@@ -106,17 +143,8 @@ async function seed() {
     providerId: null,
   });
 
-  // const { dataValues: user } = await User.create({
-  //   email: 'test@test.com',
-  //   name: 'Test user 1',
-  //   password: 'password',
-  //   image: null,
-  //   role: 'ADMIN',
-  //   status: 'ACTIVE',
-  //   provider: null,
-  //   providerId: null,
-  // });
-
   global.console.log('end seed');
 }
+
+createFolders();
 seed();

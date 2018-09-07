@@ -130,6 +130,7 @@
     "koa-bodyparser": "^4.2.1",
     "koa-jwt": "^3.5.0",
     "koa-router": "^7.4.0",
+    "koa-static": "^5.0.0",
     "parse-strings-in-object": "^1.2.0",
     "rc": "^1.2.8",
     "reflect-metadata": "^0.1.12",

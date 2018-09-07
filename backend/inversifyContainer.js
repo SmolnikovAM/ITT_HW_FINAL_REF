@@ -11,7 +11,7 @@ import * as repositoryModule from './db/inversify.module';
 import * as errorsModule from './helpers/errors/inversify.module';
 import * as authService from './services/auth/inversify.module';
 import * as userService from './services/user/inversify.module';
-
+import * as videoService from './services/video/inversify.module';
 // import * as refreshTokenService from './services/refreshToken/inversify.module';
 //
 
@@ -25,6 +25,7 @@ const modules = [
   errorsModule,
   authService,
   userService,
+  videoService,
   // refreshTokenService,
 ];
 

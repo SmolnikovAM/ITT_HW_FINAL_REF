@@ -13,6 +13,7 @@ import userVideoLikeTableCreate from './repository/dbmodel/userVideoLike';
 import videoTableCreate from './repository/dbmodel/video';
 import videoPlaylistTableCreate from './repository/dbmodel/videoPlaylist';
 import refreshTokenTableCreate from './repository/dbmodel/refreshToken';
+import videoFileTableCreate from './repository/dbmodel/videoFile';
 
 import UserRepository from './repository/userRepository';
 import CommentRepository from './repository/commentRepository';
@@ -25,8 +26,14 @@ import VideoRepository from './repository/videoRepository';
 import VideoPlaylistRepository from './repository/videoPlaylistRepository';
 import UserVideoLikeVideoRepository from './repository/userVideoLikeVideoRepository';
 import RefreshTokenRepository from './repository/refreshTokenRepository';
+import VideoFileRepository from './repository/videoFileRepository';
 
 const MODULES = [
+  {
+    name: 'VideoFile',
+    createTable: videoFileTableCreate,
+    RepositoryClass: VideoFileRepository,
+  },
   {
     name: 'User',
     createTable: userTableCreate,
@@ -113,7 +120,7 @@ export default class Repository {
       promiseChain = promiseChain
         .then(() => this[name].sync({ force: this.config.dbForce }))
         .then(() => {
-          this[`${name}Repository`] = new RepositoryClass(this[name]);
+          this[`${name}Repository`] = new RepositoryClass(this);
         });
     });
 
@@ -133,6 +140,7 @@ export default class Repository {
       VideoPlaylist,
       UserVideoLike,
       RefreshToken,
+      VideoFile,
     } = this.MODULES.reduce((a, { name, model }) => {
       // eslint-disable-next-line no-param-reassign
       a[name] = model;
@@ -152,6 +160,9 @@ export default class Repository {
     Playlist.hasMany(VideoPlaylist);
     VideoPlaylist.belongsTo(Video);
     Video.hasMany(VideoPlaylist);
+
+    VideoFile.belongsTo(Video);
+    Video.VideoFiles = Video.hasMany(VideoFile);
 
     CommentUserLike.belongsTo(User);
     CommentUserLike.belongsTo(Comment);

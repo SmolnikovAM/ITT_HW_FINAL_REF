@@ -1,5 +1,5 @@
 export default class UserRepository {
-  constructor(RefreshToken) {
+  constructor({ RefreshToken }) {
     this.RefreshToken = RefreshToken;
   }
 

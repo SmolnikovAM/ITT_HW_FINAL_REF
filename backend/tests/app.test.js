@@ -16,15 +16,17 @@ createApp()
   })
   .then(serverReadyFn);
 
-test('App works', async () => {
+beforeEach(async done => {
   await serverReady;
+  done();
+});
+
+test('App works', async () => {
   const res = await app.get('/testserver');
   expect(res.status).toEqual(200);
 });
 
 test('Check test enviroment', async () => {
-  await serverReady;
-
   const config = container.get(TYPES.Config);
 
   expect(config.test).toEqual(true);

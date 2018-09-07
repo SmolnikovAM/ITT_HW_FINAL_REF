@@ -22,6 +22,10 @@ const config = parseSettings(
     test: false,
     autostart: false,
     jwtSecret: 'SECRETKEY',
+    jwtExpiresIn: '15min',
+    staticFolder: '../resources/static',
+    videoFolder: '../resources/video',
+    tmpFolder: '../resources/tmp',
   })
 );
 
